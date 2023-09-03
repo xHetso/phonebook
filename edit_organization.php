@@ -158,7 +158,7 @@ $conn->close();
     document.getElementById('deleteButton').addEventListener('click', function() {
         if (confirm('Вы уверены, что хотите удалить этого человека?')) {
             // Пользователь подтвердил, выполняем удаление
-            window.location.href = 'delete2.php?id=<?php echo $organization_id; ?>'; // Замените на фактический URL вашего сценария удаления
+            window.location.href = 'delete_organization.php?id=<?php echo $organization_id; ?>'; // Замените на фактический URL вашего сценария удаления
         }
     });
     </script>
