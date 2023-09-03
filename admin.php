@@ -137,14 +137,14 @@ mysqli_close($connection);
                 if ($result->num_rows > 0) {
                     echo "<table class='table'>
                             <thead>
-                                <tr>
-                                    <th><a href='#' class='sort-link' data-column='id'>id</a></th>
-                                    <th><a href='#' class='sort-link' data-column='phone_number'>Телефон</a></th>
-                                    <th><a href='#' class='sort-link' data-column='last_name'>Фамилия</a></th>
-                                    <th><a href='#' class='sort-link' data-column='first_name'>Имя</a></th>
-                                    <th><a href='#' class='sort-link' data-column='patronymic'>Отчество</a></th>
-                                    <th></th>
-                                </tr>
+                            <tr>
+                                <th><a href='#' class='private-sort-link' data-column='id' data-sort='asc'>id</a></th>
+                                <th><a href='#' class='private-sort-link' data-column='phone_number' data-sort='asc'>Телефон</a></th>
+                                <th><a href='#' class='private-sort-link' data-column='last_name' data-sort='asc'>Фамилия</a></th>
+                                <th><a href='#' class='private-sort-link' data-column='first_name' data-sort='asc'>Имя</a></th>
+                                <th><a href='#' class='private-sort-link' data-column='patronymic' data-sort='asc'>Отчество</a></th>
+                                <th></th>
+                            </tr>
                             </thead>
                             <tbody>";
 
@@ -192,18 +192,20 @@ mysqli_close($connection);
                 if ($result->num_rows > 0) {
                     echo "<table class='table'>
                             <thead>
-                                <tr>
-                                    <th> <a href='#' class='sort-link2' data-column='id2'> id</th>
-                                    <th> <a href='#' class='sort-link2' data-column='phone_number2'> Телефон</th>
-                                    <th> <a href='#' class='sort-link2' data-column='organization'>Организация</th>
-                                    <th> <a href='#' class='sort-link2' data-column='department'>Департамент</th>
-                                    <th> <a href='#' class='sort-link2' data-column='country'>Страна</th>
-                                    <th> <a href='#' class='sort-link2' data-column='city'>Город</th>
-                                    <th> <a href='#' class='sort-link2' data-column='street'>Улица</th>
-                                    <th> <a href='#' class='sort-link2' data-column='house_number'>Дом</th>
-                                    <th> <a href='#' class='sort-link2' data-column='apartment_number'>Квартира</th>
-                                    <th></th>
-                                </tr>
+                            <tr>
+                                <th><a href='#' class='organization-sort-link' data-column='id2' data-sort='asc'>id</a></th>
+                                <th><a href='#' class='organization-sort-link' data-column='phone_number2' data-sort='asc'>Телефон</a></th>
+                                <th><a href='#' class='organization-sort-link' data-column='organization'data-sort='asc'>Организация</a></th>
+                                <th><a href='#' class='organization-sort-link' data-column='department'data-sort='asc'>Департамент</a></th>
+                                <th><a href='#' class='organization-sort-link' data-column='country'data-sort='asc'>Страна</a></th>
+                                <th><a href='#' class='organization-sort-link' data-column='city'data-sort='asc'>Город</a></th>
+                                <th><a href='#' class='organization-sort-link' data-column='street'data-sort='asc'>Улица</a></th>
+                                <th><a href='#' class='organization-sort-link' data-column='house_number'data-sort='asc'>Дом</a></th>
+                                <th><a href='#' class='organization-sort-link' data-column='apartment_number'data-sort='asc'>Квартира</a></th>
+                                <th></th>
+                            </tr>
+                        
+                        
                             </thead>
                             <tbody>";
 
@@ -232,49 +234,61 @@ mysqli_close($connection);
 
                 $conn->close();
             ?>
-                <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                        const privateSortLinks = document.querySelectorAll(".sort-link");
-                        const organizationSortLinks = document.querySelectorAll(".sort-link2");
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const privateSortLinks = document.querySelectorAll(".private-sort-link");
+        const organizationSortLinks = document.querySelectorAll(".organization-sort-link");
 
-                        privateSortLinks.forEach(link => {
-                            link.addEventListener("click", function(event) {
-                                event.preventDefault();
-                                const column = this.getAttribute("data-column");
-                                const currentSort = this.getAttribute("data-sort");
-                                const newSort = currentSort === "asc" ? "desc" : "asc";
-                                this.setAttribute("data-sort", newSort);
-                                sortTable(column, newSort, "privatePersonsTable");
-                            });
-                        });
+        privateSortLinks.forEach(link => {
+            link.addEventListener("click", function(event) {
+                event.preventDefault();
+                const column = this.getAttribute("data-column");
+                const currentSort = this.getAttribute("data-sort");
+                const newSort = currentSort === "asc" ? "desc" : "asc";
+                this.setAttribute("data-sort", newSort);
+                sortTable(column, newSort, "privatePersonsTable");
+            });
+        });
 
-                        organizationSortLinks.forEach(link2 => {
-                            link2.addEventListener("click", function(event) {
-                                event.preventDefault();
-                                const column2 = this.getAttribute("data-column");
-                                const currentSort2 = this.getAttribute("data-sort");
-                                const newSort2 = currentSort2 === "asc" ? "desc" : "asc";
-                                this.setAttribute("data-sort", newSort2);
-                                sortTable(column2, newSort2, "organizationsTable");
-                            });
-                        });
+        organizationSortLinks.forEach(link2 => {
+            link2.addEventListener("click", function(event) {
+                event.preventDefault();
+                const column2 = this.getAttribute("data-column");
+                const currentSort2 = this.getAttribute("data-sort");
+                const newSort2 = currentSort2 === "asc" ? "desc" : "asc";
+                this.setAttribute("data-sort", newSort2);
+                sortTable(column2, newSort2, "organizationsTable");
+            });
+        });
 
-                        function sortTable(column, sortDirection, tableId) {
-                            const table = document.getElementById(tableId).querySelector("table tbody");
-                            const rows = Array.from(table.querySelectorAll("tr"));
+        function sortTable(column, sortDirection, tableId) {
+            const table = document.getElementById(tableId).querySelector("table tbody");
+            const rows = Array.from(table.querySelectorAll("tr"));
 
-                            rows.sort((rowA, rowB) => {
-                                const cellA = rowA.querySelector(`td[data-column="${column}"]`).textContent.trim();
-                                const cellB = rowB.querySelector(`td[data-column="${column}"]`).textContent.trim();
+            rows.sort((rowA, rowB) => {
+                const cellA = rowA.querySelector(`td[data-column="${column}"]`).textContent.trim();
+                const cellB = rowB.querySelector(`td[data-column="${column}"]`).textContent.trim();
 
-                                return sortDirection === "asc" ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
-                            });
+                // Определение типа данных на основе столбца
+                if (column === "id2" || column === "phone_number2" || column === "house_number" || column === "apartment_number") {
+                    const numA = parseInt(cellA);
+                    const numB = parseInt(cellB);
+                    return sortDirection === "asc" ? numA - numB : numB - numA;
+                } else {
+                    // Сортировка текста
+                    return sortDirection === "asc" ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+                }
+            });
 
-                            table.innerHTML = "";
-                            rows.forEach(row => table.appendChild(row));
-                        }
-                    });
-                </script>
+            table.innerHTML = "";
+            rows.forEach(row => table.appendChild(row));
+        }
+    });
+</script>
+
+
+
+
 
             
         </div>
