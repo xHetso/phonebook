@@ -156,7 +156,7 @@ mysqli_close($connection);
                                 <td data-column='first_name'>" . $row["first_name"] . "</td>
                                 <td data-column='patronymic'>" . $row["patronymic"] . "</td>
                                 <td>
-                                    <a href='edit.php?id=" . $row["id"] . "'><span class='iconify' data-icon='ic:baseline-edit' data-inline='false'></span></a>
+                                    <a href='edit_.php?id=" . $row["id"] . "'><span class='iconify' data-icon='ic:baseline-edit' data-inline='false'></span></a>
                                     <a href='delete.php?id=" . $row["id"] . "'><span class='iconify' data-icon='ic:baseline-delete' data-inline='false'></span></a>
                                 </td>
                             </tr>";
@@ -221,7 +221,7 @@ mysqli_close($connection);
                                 <td data-column='house_number'>" . $row["house_number"] . "</td>
                                 <td data-column='apartment_number'>" . $row["apartment_number"] . "</td>
                                 <td>
-                                    <a href='edit2.php?id=" . $row["id"] . "'><span class='iconify' data-icon='ic:baseline-edit' data-inline='false'></span></a>
+                                    <a href='edit_organization.php?id=" . $row["id"] . "'><span class='iconify' data-icon='ic:baseline-edit' data-inline='false'></span></a>
                                     <a href='delete2.php?id=" . $row["id"] . "'><span class='iconify' data-icon='ic:baseline-delete' data-inline='false'></span></a>
                                 </td>
                             </tr>";
