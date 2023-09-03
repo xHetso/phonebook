@@ -118,7 +118,7 @@ mysqli_close($connection);
         </select>
         <div id="privatePersonsTable" style="display: block;">
             <h1>Список частных лиц и частных предприятий</h1>
-            <button class="btn btn-primary mb-3"  onclick="location.href='add.php'">Добавить частное лицо</button>
+            <button class="btn btn-primary mb-3"  onclick="location.href='add_user.php'">Добавить частное лицо</button>
             <?php
                 $servername = "127.0.0.1";
                 $username = "root"; 
@@ -173,7 +173,7 @@ mysqli_close($connection);
         </div>
         <div id="organizationsTable" style="display: none;">
             <h1>Список организаций</h1>
-            <button class="btn btn-primary mb-3" onclick="location.href='add2.php'">Добавить организацию</button>
+            <button class="btn btn-primary mb-3" onclick="location.href='add_organization.php'">Добавить организацию</button>
             <?php
                 $servername = "127.0.0.1";
                 $username = "root"; 
