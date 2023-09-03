@@ -5,9 +5,9 @@ use \Firebase\JWT\JWT;
 
 // Подключение к базе данных
 $servername = "127.0.0.1";
-$username = "root"; 
-$password = "root"; 
-$dbname = "phonebook"; 
+$username = "root";
+$password = "root";
+$dbname = "phonebook";
 
 // Создаем подключение к базе данных
 $connection = mysqli_connect($servername, $username, $password, $dbname);
@@ -25,14 +25,13 @@ if (isset($_COOKIE['jwt'])) {
     try {
         $decoded = JWT::decode($jwt, $jwt_secret, array('HS256'));
         $user_id = $decoded->user_id;
-        // Дополнительные данные из токена, если необходимо
 
-        // Теперь у вас есть $user_id, который можно использовать для запроса к базе данных
-        // и проверки, является ли пользователь админом
-
-        // Пример запроса к базе данных для получения информации о пользователе
-        $query = "SELECT is_admin FROM users WHERE id = '$user_id'";
-        $result = mysqli_query($connection, $query);
+        // Используем подготовленный запрос для безопасности
+        $query = "SELECT is_admin FROM users WHERE id = ?";
+        $stmt = mysqli_prepare($connection, $query);
+        mysqli_stmt_bind_param($stmt, "i", $user_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
 
         if ($result) {
             $user = mysqli_fetch_assoc($result);
@@ -45,14 +44,17 @@ if (isset($_COOKIE['jwt'])) {
         } else {
             echo "Ошибка при выполнении запроса: " . mysqli_error($connection);
         }
-
     } catch (Exception $e) {
         echo "Ошибка: " . $e->getMessage();
     }
 } else {
     echo "Доступ запрещен. Пожалуйста, авторизуйтесь.";
 }
+
+// Закрываем соединение с базой данных
+mysqli_close($connection);
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>

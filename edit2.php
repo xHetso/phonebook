@@ -15,9 +15,12 @@ if ($conn->connect_error) {
 // Get ID from query parameter
 $organization_id = $_GET['id'];
 
-// Fetch organization data based on ID
-$sql = "SELECT * FROM organization WHERE id = '$organization_id'";
-$result = $conn->query($sql);
+// Prepare and execute a SELECT statement
+$sql = "SELECT * FROM organization WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $organization_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 // Check if data exists
 if ($result->num_rows > 0) {
@@ -46,15 +49,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_house_number = $_POST["house_number"];
     $new_apartment_number = $_POST["apartment_number"];
 
-    // Update query
-    $update_sql = "UPDATE organization SET phone_number='$new_phone_number', organization_name='$new_organization_name', department_name='$new_department_name', country='$new_country', city='$new_city', street='$new_street', house_number='$new_house_number', apartment_number='$new_apartment_number' WHERE id='$organization_id'";
+    // Prepare and execute an UPDATE statement
+    $update_sql = "UPDATE organization SET phone_number=?, organization_name=?, department_name=?, country=?, city=?, street=?, house_number=?, apartment_number=? WHERE id=?";
+    $stmt = $conn->prepare($update_sql);
+    $stmt->bind_param("ssssssssi", $new_phone_number, $new_organization_name, $new_department_name, $new_country, $new_city, $new_street, $new_house_number, $new_apartment_number, $organization_id);
 
-    if ($conn->query($update_sql) === TRUE) {
+    if ($stmt->execute()) {
         // Redirect after successful update
         header("Location: admin.php"); // Replace with your desired page
         exit;
     } else {
-        echo "Error updating organization data: " . $conn->error;
+        echo "Error updating organization data: " . $stmt->error;
     }
 }
 

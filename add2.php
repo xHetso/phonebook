@@ -20,17 +20,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $house = $_POST["house_number"];
     $apartment = $_POST["apartment_number"];
 
+    // Используем подготовленный запрос
     $sql = "INSERT INTO organization (phone_number, organization_name, department_name, country, city, street, house_number, apartment_number) 
-            VALUES ('$phone', '$orgName', '$deptName', '$country', '$city', '$street', '$house', '$apartment')";
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    
+    $stmt = $conn->prepare($sql);
 
-    if ($conn->query($sql) === TRUE) {
-        // Перенаправляем на admin.php перед отправкой любых данных в поток вывода
-        header("Location: admin.php");
-        exit; // Важно завершить выполнение скрипта после перенаправления
+    if ($stmt) {
+        // Привязываем параметры к значениям
+        $stmt->bind_param("ssssssss", $phone, $orgName, $deptName, $country, $city, $street, $house, $apartment);
         
-        echo "Запись успешно добавлена."; // Теперь это не вызовет проблем
+        if ($stmt->execute()) {
+            // Перенаправляем на admin.php перед отправкой любых данных в поток вывода
+            header("Location: admin.php");
+            exit;
+        } else {
+            echo "Ошибка выполнения запроса: " . $stmt->error;
+        }
+
+        $stmt->close();
     } else {
-        echo "Ошибка: " . $sql . "<br>" . $conn->error;
+        echo "Ошибка подготовки запроса: " . $conn->error;
     }
 
     $conn->close();

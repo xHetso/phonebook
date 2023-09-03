@@ -39,21 +39,30 @@
                 $firstName = $_POST['first-name'];
                 $middleName = $_POST['middle-name'];
 
-                $sql = "SELECT * FROM private_person WHERE phone_number = '$phone' OR last_name = '$lastName' OR first_name = '$firstName' OR patronymic = '$middleName'";
-                $result = $conn->query($sql);
+                // Используйте подготовленные запросы
+                $sql = "SELECT id, phone_number, last_name, first_name, patronymic FROM private_person WHERE phone_number = ? OR last_name = ? OR first_name = ? OR patronymic = ?";
+                $stmt = $conn->prepare($sql);
 
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td>" . $row["id"] . "</td>";
-                        echo "<td>" . $row["phone_number"] . "</td>";
-                        echo "<td>" . $row["last_name"] . "</td>";
-                        echo "<td>" . $row["first_name"] . "</td>";
-                        echo "<td>" . $row["patronymic"] . "</td>";
-                        echo "</tr>";
+                if ($stmt) {
+                    $stmt->bind_param("ssss", $phone, $lastName, $firstName, $middleName);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>";
+                            echo "<td>" . $row["id"] . "</td>";
+                            echo "<td>" . $row["phone_number"] . "</td>";
+                            echo "<td>" . $row["last_name"] . "</td>";
+                            echo "<td>" . $row["first_name"] . "</td>";
+                            echo "<td>" . $row["patronymic"] . "</td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='5'>0 результатов</td></tr>";
                     }
-                } else {
-                    echo "<tr><td colspan='5'>0 результатов</td></tr>";
+
+                    $stmt->close();
                 }
 
                 $conn->close();

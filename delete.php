@@ -15,10 +15,17 @@ if ($conn->connect_error) {
 // Получаем ID товара из параметра запроса
 $person_id = $_GET['id'];
 
-// Запрос на удаление товара
-$delete_sql = "DELETE FROM private_person WHERE id='$person_id'";
+// Запрос на удаление товара с использованием подготовленного запроса
+$delete_sql = "DELETE FROM private_person WHERE id=?";
 
-if ($conn->query($delete_sql) === TRUE) {
+$stmt = $conn->prepare($delete_sql);
+if (!$stmt) {
+    die("Ошибка подготовки запроса: " . $conn->error);
+}
+
+$stmt->bind_param("i", $person_id);
+
+if ($stmt->execute()) {
     echo "Данные успешно удалены.";
     // Перенаправляем пользователя на страницу со списком товаров через секунду
     echo '<script>
@@ -27,7 +34,7 @@ if ($conn->query($delete_sql) === TRUE) {
             }, 1000);
           </script>';
 } else {
-    echo "Ошибка при удалении данных: " . $conn->error;
+    echo "Ошибка при удалении данных: " . $stmt->error;
     // Перенаправляем пользователя на страницу admin.php через секунду
     echo '<script>
             setTimeout(function() {
@@ -36,6 +43,7 @@ if ($conn->query($delete_sql) === TRUE) {
           </script>';
 }
 
-// Закрываем соединение
+// Закрываем подготовленный запрос и соединение
+$stmt->close();
 $conn->close();
 ?>

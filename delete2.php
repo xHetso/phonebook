@@ -14,25 +14,27 @@ if ($conn->connect_error) {
 
 $organization_id = $_GET['id'];
 
-// Запрос на удаление товара
-$delete_sql = "DELETE FROM organization WHERE id='$organization_id'";
+// Подготавливаем SQL-запрос с плейсхолдером
+$delete_sql = "DELETE FROM organization WHERE id=?";
 
-if ($conn->query($delete_sql) === TRUE) {
-    echo "Данные успешно удалены.";
-    // Перенаправляем пользователя на страницу со списком товаров через секунду
-    echo '<script>
-            setTimeout(function() {
-                window.location.href = "admin.php";
-            }, 1000);
-          </script>';
+// Создаем подготовленное выражение
+$stmt = $conn->prepare($delete_sql);
+
+if ($stmt) {
+    // Привязываем параметры
+    $stmt->bind_param("i", $organization_id);
+
+    // Выполняем подготовленный запрос
+    if ($stmt->execute()) {
+        echo "Данные успешно удалены.";
+    } else {
+        echo "Ошибка при удалении данных: " . $stmt->error;
+    }
+
+    // Закрываем подготовленное выражение
+    $stmt->close();
 } else {
-    echo "Ошибка при удалении данных: " . $conn->error;
-    // Перенаправляем пользователя на страницу admin.php через секунду
-    echo '<script>
-            setTimeout(function() {
-                window.location.href = "admin.php";
-            }, 1000);
-          </script>';
+    echo "Ошибка при подготовке запроса: " . $conn->error;
 }
 
 // Закрываем соединение

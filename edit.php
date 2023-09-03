@@ -15,9 +15,36 @@ if ($conn->connect_error) {
 // Get ID from query parameter
 $person_id = $_GET['id'];
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $new_phone_number = $_POST["phone_number"];
+    $new_last_name = $_POST["last_name"];
+    $new_first_name = $_POST["first_name"];
+    $new_patronymic = $_POST["patronymic"];
+
+    // Update query using a prepared statement
+    $update_sql = "UPDATE private_person SET phone_number=?, last_name=?, first_name=?, patronymic=? WHERE id=?";
+    
+    $stmt = $conn->prepare($update_sql);
+    $stmt->bind_param("ssssi", $new_phone_number, $new_last_name, $new_first_name, $new_patronymic, $person_id);
+    
+    if ($stmt->execute()) {
+        // Redirect after successful update
+        header("Location: admin.php"); // Replace with your desired page
+        exit;
+    } else {
+        echo "Error updating person data: " . $conn->error;
+    }
+
+    // Close the prepared statement
+    $stmt->close();
+}
+
 // Fetch person data based on ID
-$sql = "SELECT * FROM private_person WHERE id = '$person_id'";
-$result = $conn->query($sql);
+$sql = "SELECT * FROM private_person WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $person_id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 // Check if data exists
 if ($result->num_rows > 0) {
@@ -31,29 +58,13 @@ if ($result->num_rows > 0) {
     exit;
 }
 
-// Update person data
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $new_phone_number = $_POST["phone_number"];
-    $new_last_name = $_POST["last_name"];
-    $new_first_name = $_POST["first_name"];
-    $new_patronymic = $_POST["patronymic"];
-
-    // Update query
-    $update_sql = "UPDATE private_person SET phone_number='$new_phone_number', last_name='$new_last_name', first_name='$new_first_name', patronymic='$new_patronymic' WHERE id='$person_id'";
-
-    if ($conn->query($update_sql) === TRUE) {
-        // Redirect after successful update
-        header("Location: admin.php"); // Replace with your desired page
-        exit;
-    } else {
-        echo "Error updating person data: " . $conn->error;
-    }
-}
+// Close the prepared statement
+$stmt->close();
 
 // Close the connection
 $conn->close();
 ?>
-
+<!-- Форма для добавления организации -->
 <!DOCTYPE html>
 <html lang="en">
 <head>

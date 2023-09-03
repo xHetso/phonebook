@@ -25,7 +25,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php
+            <?php
                 // Подключение к базе данных
                 $servername = "127.0.0.1";
                 $username = "root"; 
@@ -48,18 +48,21 @@
                 $houseNumber = $_POST['house'];
                 $apartmentNumber = $_POST['apartment'];
 
-                // Запрос к базе данных
+                // Подготовленный запрос
                 $sql = "SELECT * FROM organization WHERE 
-                        phone_number = '$phone' OR 
-                        organization_name = '$orgName' OR 
-                        department_name = '$deptName' OR 
-                        country = '$country' OR 
-                        city = '$city' OR 
-                        street = '$street' OR 
-                        house_number = '$houseNumber' OR 
-                        apartment_number = '$apartmentNumber'";
+                        phone_number = ? OR 
+                        organization_name = ? OR 
+                        department_name = ? OR 
+                        country = ? OR 
+                        city = ? OR 
+                        street = ? OR 
+                        house_number = ? OR 
+                        apartment_number = ?";
                 
-                $result = $conn->query($sql);
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ssssssss", $phone, $orgName, $deptName, $country, $city, $street, $houseNumber, $apartmentNumber);
+                $stmt->execute();
+                $result = $stmt->get_result();
 
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
@@ -79,6 +82,7 @@
                     echo "<tr><td colspan='9'>0 результатов</td></tr>";
                 }
 
+                $stmt->close();
                 $conn->close();
                 ?>
             </tbody>
