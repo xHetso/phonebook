@@ -190,7 +190,7 @@
     <div class="row">
         <div class="col-md-6" id="individualSearchForm">
             <h4>Поиск частного лица или частной организации:</h4>
-            <form action="search.php" method="post" id="searchForm">
+            <form action="search_user.php" method="post" id="searchForm">
                 <label for="phone">Номер телефона</label>
                 <input type="tel" id="phone" name="phone">
         
@@ -207,7 +207,7 @@
         </div>
         <div class="col-md-6" id="organizationSearchForm" style="display: none;">
             <h4>Поиск организации:</h4>
-            <form action="search2.php" method="post" id="searchForm2">
+            <form action="search_organization.php" method="post" id="searchForm2">
                 <label for="org-phone">Номер телефона</label>
                 <input type="tel" id="org-phone" name="org-phone">
 
@@ -282,7 +282,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: 'search.php', // Укажите путь к вашему PHP файлу
+                url: 'search_user.php', // Укажите путь к вашему PHP файлу
                 data: $('form').serialize(),
                 success: function(response){
                     $('#search-results').html(response); // Элемент, в который будет вставлена таблица с результатами
@@ -295,7 +295,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: 'search2.php', // Укажите путь к вашему PHP файлу
+                url: 'search_organization.php', // Укажите путь к вашему PHP файлу
                 data: $('form').serialize(),
                 success: function(response){
                     $('#search-results').html(response); // Элемент, в который будет вставлена таблица с результатами
